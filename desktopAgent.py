@@ -11,7 +11,7 @@ class MyApp(App):
         layout = BoxLayout(orientation='vertical')
 
         # Create a label to display information
-        label1 = Label(text='This is my Android AI app')
+        label1 = Label(text='This is my Llama agent')
 
         # Create a TextInput widget to ask for user input
         # I want to know more abut private agents
