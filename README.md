@@ -11,3 +11,6 @@ pip install kivy
 Windows:
 
 pip install kivy[base] kivy_deps.sdl2 kivy_deps.glew
+
+### To install Llama
+pip install ollama
