@@ -5,13 +5,10 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.core.clipboard import Clipboard  # Import Clipboard
 
 
 class MyApp(App):
-    def __init__(self):
-        super().__init__()
-        self.response_display = None
-
     def build(self):
         # Main layout: vertical box layout
         layout = BoxLayout(orientation='vertical')
@@ -23,24 +20,31 @@ class MyApp(App):
         # Create a TextInput widget to ask for user input with a smaller size hint
         self.text_input = TextInput(hint_text='Enter your text here', multiline=False, size_hint=(1, 0.15))  # 15%
 
-        # Create a horizontal BoxLayout to hold the "Submit" and "Clear" buttons
-        button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for both buttons
+        # Create a horizontal BoxLayout to hold the "Submit", "Clear", and "Copy" buttons
+        button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for buttons
 
         # Create a "Submit" button with a green background color (RGBA)
-        submit_button = Button(text='Submit', background_color=(0, 1, 0, 1))  # Green (R=0, G=1, B=0, A=1)
+        submit_button = Button(text='Submit', background_color=(0, 0.5, 0, 1), background_normal='')
 
         # Bind the button press event to the function
         submit_button.bind(on_press=self.on_button_press)
 
         # Create a "Clear" button with a red background color (RGBA)
-        clear_button = Button(text='Clear', background_color=(1, 0, 0, 1))  # Red (R=1, G=0, B=0, A=1)
+        clear_button = Button(text='Clear', background_color=(0.5, 0, 0, 1), background_normal='')
 
         # Bind the clear button press event to clear the text fields
         clear_button.bind(on_press=self.on_clear_press)
 
+        # Create a "Copy" button to copy the response to the clipboard
+        copy_button = Button(text='Copy', background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+
+        # Bind the copy button to the function that copies text to the clipboard
+        copy_button.bind(on_press=self.on_copy_press)
+
         # Add the buttons to the horizontal layout
         button_layout.add_widget(submit_button)
         button_layout.add_widget(clear_button)
+        button_layout.add_widget(copy_button)  # Add the copy button
 
         # Add widgets to the main layout
         layout.add_widget(self.text_input)
@@ -66,6 +70,10 @@ class MyApp(App):
         # Clear the text input and response display fields
         self.text_input.text = ''
         self.response_display.text = ''
+
+    def on_copy_press(self, instance):
+        # Copy the response text to the clipboard
+        Clipboard.copy(self.response_display.text)
 
 
 if __name__ == '__main__':
