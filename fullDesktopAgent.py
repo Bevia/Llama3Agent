@@ -8,6 +8,10 @@ from kivy.uix.textinput import TextInput
 
 
 class MyApp(App):
+    def __init__(self):
+        super().__init__()
+        self.response_display = None
+
     def build(self):
         # Main layout: vertical box layout
         layout = BoxLayout(orientation='vertical')
