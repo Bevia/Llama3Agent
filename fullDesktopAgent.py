@@ -10,6 +10,9 @@ from kivy.core.clipboard import Clipboard  # Import Clipboard
 
 class MyApp(App):
     def build(self):
+        # Set the window title
+        self.title = "Bevia's Llama 3 Chat Agent"
+
         # Main layout: vertical box layout
         layout = BoxLayout(orientation='vertical')
 
@@ -18,7 +21,7 @@ class MyApp(App):
                                           size_hint=(1, 0.7))  # Takes 70% of the available vertical space
 
         # Create a TextInput widget to ask for user input with a smaller size hint
-        self.text_input = TextInput(hint_text='Enter your text here', multiline=False, size_hint=(1, 0.15))  # 15%
+        self.text_input = TextInput(hint_text='Aske me anything you want :)', multiline=False, size_hint=(1, 0.15))  # 15%
 
         # Create a horizontal BoxLayout to hold the "Submit", "Clear", and "Copy" buttons
         button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for buttons
