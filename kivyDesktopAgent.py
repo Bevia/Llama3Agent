@@ -1,11 +1,13 @@
 import sys
 import subprocess
+import threading
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from kivy.core.clipboard import Clipboard  # Import Clipboard
+from kivy.core.clipboard import Clipboard
+from kivy.clock import Clock
 
 
 class MyApp(App):
@@ -21,7 +23,7 @@ class MyApp(App):
                                           size_hint=(1, 0.7))  # Takes 70% of the available vertical space
 
         # Create a TextInput widget to ask for user input with a smaller size hint
-        self.text_input = TextInput(hint_text='Aske me anything you want :)', multiline=False, size_hint=(1, 0.15))  # 15%
+        self.text_input = TextInput(hint_text='Ask me anything you want :)', multiline=False, size_hint=(1, 0.15))  # 15%
 
         # Create a horizontal BoxLayout to hold the "Submit", "Clear", and "Copy" buttons
         button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for buttons
@@ -59,6 +61,13 @@ class MyApp(App):
     def on_button_press(self, instance):
         user_text = self.text_input.text  # Get the text entered by the user
 
+        # Show waiting message while the response is being generated
+        self.response_display.text = "Waiting for response..."
+
+        # Create a new thread to handle the subprocess call
+        threading.Thread(target=self.run_llama_agent, args=(user_text,)).start()
+
+    def run_llama_agent(self, user_text):
         # Call the second Python file with the user input as an argument and capture the output
         result = subprocess.run([sys.executable, 'llamaAgent.py', user_text],
                                 capture_output=True, text=True)
@@ -66,6 +75,10 @@ class MyApp(App):
         # Get the response from the script
         response_text = result.stdout.strip()
 
+        # Schedule the UI update on the main thread
+        Clock.schedule_once(lambda dt: self.update_response(response_text))
+
+    def update_response(self, response_text):
         # Update the TextInput widget with the response from the second script
         self.response_display.text = response_text
 
