@@ -24,7 +24,8 @@ class MyApp(App):
                                           size_hint=(1, 0.7))  # Takes 70% of the available vertical space
 
         # Create a TextInput widget to ask for user input with a smaller size hint
-        self.text_input = TextInput(hint_text='Ask me anything you want :)', multiline=False, size_hint=(1, 0.15))  # 15%
+        self.text_input = TextInput(hint_text='Ask me anything you want :)', multiline=False,
+                                    size_hint=(1, 0.15))  # 15%
 
         # Create a horizontal BoxLayout to hold the "Submit", "Clear", and "Copy" buttons
         button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for buttons
@@ -61,24 +62,16 @@ class MyApp(App):
         root_layout.add_widget(main_layout)
 
         # Create an Image widget for animating the spinner frames
-        self.loading_spinner = Image(source='loader_01.png', size_hint=(None, None), size=(200, 200))
+        self.loading_spinner = Image(source='assets/loader_01.png', size_hint=(None, None), size=(200, 200))
         self.loading_spinner.opacity = 0  # Hide spinner initially
 
         # Center the spinner in the FloatLayout (overlay)
         self.loading_spinner.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
         root_layout.add_widget(self.loading_spinner)  # Add spinner as overlay on top of everything
 
-        # Setup the frame sequence for animation
-        self.spinner_frames = ['loader_02.png', 'loader_03.png',
-                               'loader_04.png', 'loader_05.png',
-                               'loader_06.png', 'loader_07.png',
-                               'loader_08.png', 'loader_09.png',
-                               'loader_10.png', 'loader_11.png',
-                               'loader_12.png', 'loader_13.png',
-                               'loader_14.png', 'loader_15.png',
-                               'loader_16.png', 'loader_17.png',
-                               'loader_18.png', 'loader_19.png',
-                               'loader_20.png', 'loader_21.png']  # Add more if needed
+        # Setup the frame sequence for animation (include the assets/ directory in each path)
+        # Automatically add 'assets/' to each frame name
+        self.spinner_frames = [f'assets/loader_{i:02}.png' for i in range(2, 22)]  # Adjust the range as needed
         self.current_frame = 0
 
         return root_layout
