@@ -20,3 +20,6 @@ select te latest model, as of Oct 11 2024 it is Llama 3
 then from you terminal:
 1. pip install ollama
 2. ollama pull llama3
+
+Explore Llama 3:
+https://ai.meta.com/blog/meta-llama-3/
