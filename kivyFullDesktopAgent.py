@@ -31,19 +31,19 @@ class MyApp(App):
         button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for buttons
 
         # Create a "Submit" button with a green background color (RGBA)
-        submit_button = Button(text='Submit', background_color=(0, 0.5, 0, 1), background_normal='')
+        submit_button = Button(text='Enviar', background_color=(0, 0.5, 0, 1), background_normal='')
 
         # Bind the button press event to the function
         submit_button.bind(on_press=self.on_button_press)
 
         # Create a "Clear" button with a red background color (RGBA)
-        clear_button = Button(text='Clear', background_color=(0.5, 0, 0, 1), background_normal='')
+        clear_button = Button(text='Limpiar', background_color=(0.5, 0, 0, 1), background_normal='')
 
         # Bind the clear button press event to clear the text fields
         clear_button.bind(on_press=self.on_clear_press)
 
         # Create a "Copy" button to copy the response to the clipboard
-        copy_button = Button(text='Copy', background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+        copy_button = Button(text='Copiar', background_color=(0.5, 0.5, 0.5, 1), background_normal='')
 
         # Bind the copy button to the function that copies text to the clipboard
         copy_button.bind(on_press=self.on_copy_press)
