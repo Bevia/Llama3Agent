@@ -7,6 +7,7 @@ if len(sys.argv) > 1:
 else:
     user_input = "I want to know more about private agents"  # Default message if no input is provided
 
+# Sends it to the local llama3.2 model via Ollama
 response = ollama.chat(model="llama3.2", messages=[
     {
         "role": "user",
@@ -14,4 +15,5 @@ response = ollama.chat(model="llama3.2", messages=[
     }
 ])
 
+# Prints the response back to the GUI (captured via stdout)
 print(response["message"]["content"])

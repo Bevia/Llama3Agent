@@ -2,7 +2,7 @@
 
 ## Overview
 
-LlamaAgent is a local AI chat interface that runs Meta's **Llama 3** model entirely on your machine via [Ollama](https://ollama.com/). It provides a desktop GUI built with [Kivy](https://kivy.org/) where you can type questions and receive responses from the model — no cloud services, no API keys required.
+LlamaAgent is a local AI chat interface that runs Meta's **Llama 3.2** model entirely on your machine via [Ollama](https://ollama.com). It provides a desktop GUI built with [Kivy](https://kivy.org/) where you can type questions and receive responses from the model — no cloud services, no API keys required.
 
 ---
 
@@ -20,7 +20,7 @@ User types question in GUI
         │
         ▼
 [llamaAgent.py subprocess]
-  ollama.chat(model="llama3", messages=[{"role": "user", "content": user_text}])
+  ollama.chat(model="llama3.2", messages=[{"role": "user", "content": user_text}])
         │
         ▼
   Prints response to stdout
@@ -57,7 +57,7 @@ Llama3Agent/
 The core inference engine. Designed to be called as a subprocess, not directly.
 
 - Reads the user query from `sys.argv[1]`
-- Calls `ollama.chat(model="llama3", messages=[{"role": "user", "content": query}])`
+- Calls `ollama.chat(model="llama3.2", messages=[{"role": "user", "content": query}])`
 - Prints the model response to stdout
 - Falls back to a default question (`"I want to know more about private agents"`) if no argument is provided
 
@@ -98,7 +98,7 @@ Earliest version. Calls `llamaAgent.py` via `subprocess.run()` but does **not** 
 2. A `threading.Thread` is spawned to avoid freezing the UI.
 3. The loading spinner starts animating.
 4. The thread calls `subprocess.run(["python3", "llamaAgent.py", user_text], capture_output=True)`.
-5. `llamaAgent.py` passes the text to Ollama's local `llama3` model.
+5. `llamaAgent.py` passes the text to Ollama's local `llama3.2` model.
 6. Ollama returns the response; `llamaAgent.py` prints it to stdout.
 7. The thread captures stdout and schedules a UI update via `Clock.schedule_once`.
 8. The response appears in the read-only `TextInput`; the spinner stops.
@@ -111,7 +111,7 @@ Earliest version. Calls `llamaAgent.py` via `subprocess.run()` but does **not** 
 |---|---|---|
 | `kivy` | Desktop GUI framework | `pip install kivy` |
 | `ollama` | Python SDK for local LLM inference | `pip install ollama` |
-| Ollama CLI | Local model runtime | [ollama.com](https://ollama.com) → `ollama pull llama3` |
+| Ollama CLI | Local model runtime | [ollama.com](https://ollama.com) → `ollama pull llama3.2` |
 
 Standard library: `sys`, `subprocess`, `threading`
 
@@ -123,7 +123,7 @@ Standard library: `sys`, `subprocess`, `threading`
 
 1. Install [Ollama](https://ollama.com/) and pull the model:
    ```bash
-   ollama pull llama3
+   ollama pull llama3.2
    ```
 
 2. Install Python dependencies:
