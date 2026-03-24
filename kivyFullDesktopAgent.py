@@ -1,6 +1,5 @@
-import sys
-import subprocess
 import threading
+import ollama
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -9,9 +8,13 @@ from kivy.core.clipboard import Clipboard
 from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 
 
 class MyApp(App):
+    title = 'Bevia Personal Agent'
+
     def build(self):
         # Root layout using FloatLayout to allow overlay of widgets
         root_layout = FloatLayout()
@@ -31,19 +34,19 @@ class MyApp(App):
         button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.15))  # 15% height for buttons
 
         # Create a "Submit" button with a green background color (RGBA)
-        submit_button = Button(text='Enviar', background_color=(0, 0.5, 0, 1), background_normal='')
+        submit_button = Button(text='Send', background_color=(0, 0.5, 0, 1), background_normal='')
 
         # Bind the button press event to the function
         submit_button.bind(on_press=self.on_button_press)
 
         # Create a "Clear" button with a red background color (RGBA)
-        clear_button = Button(text='Limpiar', background_color=(0.5, 0, 0, 1), background_normal='')
+        clear_button = Button(text='Clear', background_color=(0.5, 0, 0, 1), background_normal='')
 
         # Bind the clear button press event to clear the text fields
         clear_button.bind(on_press=self.on_clear_press)
 
         # Create a "Copy" button to copy the response to the clipboard
-        copy_button = Button(text='Copiar', background_color=(0.5, 0.5, 0.5, 1), background_normal='')
+        copy_button = Button(text='Copy', background_color=(0.5, 0.5, 0.5, 1), background_normal='')
 
         # Bind the copy button to the function that copies text to the clipboard
         copy_button.bind(on_press=self.on_copy_press)
@@ -74,10 +77,20 @@ class MyApp(App):
         self.spinner_frames = [f'assets/loader_{i:02}.png' for i in range(2, 22)]  # Adjust the range as needed
         self.current_frame = 0
 
+        # Conversation history — keeps context across messages
+        self.history = []
+
         return root_layout
 
     def on_button_press(self, instance):
         user_text = self.text_input.text  # Get the text entered by the user
+
+        # Validate that the user has entered some text before sending
+        if not user_text.strip():
+            popup = Popup(title='', content=Label(text='Please enter content'),
+                          size_hint=(None, None), size=(300, 150))
+            popup.open()
+            return
 
         # Show loading spinner while waiting for response
         self.show_spinner()
@@ -86,12 +99,15 @@ class MyApp(App):
         threading.Thread(target=self.run_llama_agent, args=(user_text,)).start()
 
     def run_llama_agent(self, user_text):
-        # Call the second Python file with the user input as an argument and capture the output
-        result = subprocess.run([sys.executable, 'llamaAgent.py', user_text],
-                                capture_output=True, text=True)
+        # Add the user message to the conversation history
+        self.history.append({"role": "user", "content": user_text})
 
-        # Get the response from the script
-        response_text = result.stdout.strip()
+        # Call ollama directly with the full history to preserve context
+        response = ollama.chat(model="llama3.2", messages=self.history)
+        response_text = response["message"]["content"]
+
+        # Save the assistant reply to history for future context
+        self.history.append({"role": "assistant", "content": response_text})
 
         # Schedule the UI update on the main thread
         Clock.schedule_once(lambda dt: self.update_response(response_text))
@@ -120,9 +136,10 @@ class MyApp(App):
         Clock.unschedule(self.animate_spinner)  # Stop the animation
 
     def on_clear_press(self, instance):
-        # Clear the text input and response display fields
+        # Clear the text input, response display, and conversation history
         self.text_input.text = ''
         self.response_display.text = ''
+        self.history = []
 
     def on_copy_press(self, instance):
         # Copy the response text to the clipboard
